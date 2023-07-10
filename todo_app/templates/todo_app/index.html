@@ -1,0 +1,58 @@
+{% extends 'todo_app/base.html' %}
+
+{% block container %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="todo_title" class="form-label">Todo Title</label>
+        <input type="text" class="form-control" id="todo_title" name="todo_title">
+    </div>
+    <div class="mb-3">
+        <label for="todo_description" class="form-label">Total Description</label>
+        <input type="text" class="form-control" id="todo_description" name="todo_description">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Todo</button>
+</form>
+<table class="table my-2">
+    <thead>
+        <tr>
+            <!-- <th scope="col">ID</th> -->
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Is Completed</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for todo in todos %}
+        <tr>
+            {% comment %} <th scope="row">{{ todo.id }}</th> {% endcomment %}
+            <td>{{ todo.title }}</td>
+            <td>{{ todo.description }}</td>
+            {% if todo.is_completed %}
+            <td>
+                <div class="input-group mb-3">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" value="True"
+                            aria-label="Checkbox for following text input" checked>
+                    </div>
+                    <a role="button" class="btn btn-danger mx-1" href="{% url 'delete_todo' todo.id %}">Delete</a>
+                    <a role="button" class="btn btn-warning mx-1" href="{% url 'update_todo' todo.id %}">Update</a>
+                </div>
+            </td>
+            {% else %}
+            <td>
+                <div class="input-group mb-3">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" value="False"
+                            aria-label="Checkbox for following text input">
+                    </div>
+                    <a role="button" class="btn btn-danger mx-1" href="{% url 'delete_todo' todo.id %}">Delete</a>
+                    <a role="button" class="btn btn-warning mx-1" href="{% url 'update_todo' todo.id %}">Update</a>
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

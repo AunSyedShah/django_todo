@@ -1,0 +1,16 @@
+{% extends 'todo_app/base.html' %}
+
+{% block container %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="todo_title" class="form-label">Todo Title</label>
+        <input type="text" class="form-control" id="todo_title" name="todo_title" value={{ todo_item.title }}>
+    </div>
+    <div class="mb-3">
+        <label for="todo_description" class="form-label">Total Description</label>
+        <input type="text" class="form-control" id="todo_description" name="todo_description" value={{ todo_item.description }}>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Todo</button>
+</form>
+{% endblock %}

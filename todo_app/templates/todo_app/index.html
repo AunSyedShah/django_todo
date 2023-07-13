@@ -1,17 +1,10 @@
 {% extends 'todo_app/base.html' %}
 
 {% block container %}
-<form method="post">
+<form method="post" name="todo_insert_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="mb-3">
-        <label for="todo_title" class="form-label">Todo Title</label>
-        <input type="text" class="form-control" id="todo_title" name="todo_title">
-    </div>
-    <div class="mb-3">
-        <label for="todo_description" class="form-label">Total Description</label>
-        <input type="text" class="form-control" id="todo_description" name="todo_description">
-    </div>
-    <button type="submit" class="btn btn-primary">Add Todo</button>
+   {{form.as_p}}
+    <button type="submit" class="btn btn-primary" name="todo_insert_submit_button">Add Todo</button>
 </form>
 <table class="table my-2">
     <thead>
@@ -20,39 +13,47 @@
             <th scope="col">Title</th>
             <th scope="col">Description</th>
             <th scope="col">Is Completed</th>
+            <th scope="col">Image</th>
         </tr>
     </thead>
     <tbody>
         {% for todo in todos %}
         <tr>
-            {% comment %} <th scope="row">{{ todo.id }}</th> {% endcomment %}
+            {% if todo.is_completed %}
+            <td class="todo_completed"><del>{{ todo.title }}</del></td>
+            <td class="todo_completed"><del>{{ todo.description }} </del></td>
+            {%else%}
             <td>{{ todo.title }}</td>
             <td>{{ todo.description }}</td>
-            {% if todo.is_completed %}
-            <td>
-                <div class="input-group mb-3">
-                    <div class="input-group-text">
-                        <input class="form-check-input mt-0" type="checkbox" value="True"
-                            aria-label="Checkbox for following text input" checked>
-                    </div>
-                    <a role="button" class="btn btn-danger mx-1" href="{% url 'delete_todo' todo.id %}">Delete</a>
-                    <a role="button" class="btn btn-warning mx-1" href="{% url 'update_todo' todo.id %}">Update</a>
-                </div>
-            </td>
-            {% else %}
-            <td>
-                <div class="input-group mb-3">
-                    <div class="input-group-text">
-                        <input class="form-check-input mt-0" type="checkbox" value="False"
-                            aria-label="Checkbox for following text input">
-                    </div>
-                    <a role="button" class="btn btn-danger mx-1" href="{% url 'delete_todo' todo.id %}">Delete</a>
-                    <a role="button" class="btn btn-warning mx-1" href="{% url 'update_todo' todo.id %}">Update</a>
-                </div>
-            </td>
             {% endif %}
+            <td>
+                <div class="input-group mb-3">
+                    <div class="input-group-text">
+                        <form method="post" id="is_completed_form" name="is_completed_form">
+                            {% csrf_token %}
+                        <input class="form-check-input mt-0" type="checkbox" aria-label="Checkbox for following text input" {% if todo.is_completed %} checked {% else %} {% endif %} value="{{todo.id}}" onclick="update_is_completed()">
+                    </div>
+                    <a role="button" class="btn btn-danger mx-1" href="{% url 'delete_todo' todo.id %}">Delete</a>
+                    <a role="button" class="btn btn-warning mx-1" href="{% url 'update_todo' todo.id %}">Update</a>
+                </div>
+            </td>
+            <td>
+                <img src="{{ todo.todo_image.url }}" alt="">
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function update_is_completed(){
+            const todo_id = event.target.value;
+            console.log(todo_id);
+            axios.get(`is_completed/${todo_id}`).then(
+                function(response){
+                    let elements = document.getElementsByClassName('todo_completed');
+                }
+            )
+        }
+    </script>
 {% endblock %}
